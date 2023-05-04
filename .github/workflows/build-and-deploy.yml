@@ -13,15 +13,13 @@ jobs:
 
       - name: Install Dependencies
         run: npm install
-
-      - name: Build
-        run: npm run build
-
-      - name: Set up environment variables
         env:
           VITE_REDIRECT_URI: ${{ secrets.VITE_REDIRECT_URI }}
           VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
           VITE_USER_ID: ${{ secrets.VITE_USER_ID }}
+
+      - name: Build
+        run: npm run build
 
       - name: Deploy
         uses: JamesIves/github-pages-deploy-action@4.1.5
