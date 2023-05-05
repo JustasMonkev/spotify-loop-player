@@ -23,8 +23,6 @@ and end points of the song loop.
 3. Create a `.env` file in the root directory of the project with the following contents:
 5. VITE_REDIRECT_URI=your_redirect_uri
 6. VITE_CLIENT_ID=your_client_id
-7. VITE_USER_ID=your_user_id 
-VITE_USER_ID=your_user_id `
+7. VITE_USER_ID=your_user_id
+   VITE_USER_ID=your_user_id `
 7. Run the application: `npm run dev`
-
-```
