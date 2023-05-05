@@ -16,9 +16,9 @@ permissions:
   id-token: write
 
 env:
-    VITE_REDIRECT_URI: ${{ secrets.VITE_REDIRECT_URI }}
-    VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
-    VITE_USER_ID: ${{ secrets.VITE_USER_ID }}
+  VITE_REDIRECT_URI: ${{ secrets.VITE_REDIRECT_URI }}
+  VITE_CLIENT_ID: ${{ secrets.VITE_CLIENT_ID }}
+  VITE_USER_ID: ${{ secrets.VITE_USER_ID }}
 
 # Allow one concurrent deployment
 concurrency:
@@ -50,7 +50,7 @@ jobs:
         uses: actions/upload-pages-artifact@v1
         with:
           # Upload dist repository
-          path: './'
+          path: './dist'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v1
