@@ -1,6 +1,7 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import "./assets/styles.css";
+import SpotifyApp from "./SpotifyApp.tsx";
 
 interface SpotifyAuthProps {
     client_id: string;
@@ -67,18 +68,15 @@ const SpotifyAuth: React.FC<SpotifyAuthProps> = ({client_id, redirect_uri, scope
         }
     };
 
-    // const initiateAuthorization = async () => {
-    //     window.location.href = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=${scopes.join('%20')}&show_dialog=true`;
-    // };
+    const initiateAuthorization = async () => {
+        window.location.href = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=${scopes.join('%20')}&show_dialog=true`;
+    };
 
     return (
         <div className="authButtonContainer">
-            <p>Hello World</p>
+            {token ? <SpotifyApp/> :
+                <button onClick={initiateAuthorization} className="authButton"></button>}
         </div>
-        // <div className="authButtonContainer">
-        //     {token ? <SpotifyApp/> :
-        //         <button onClick={initiateAuthorization} className="authButton"></button>}
-        // </div>
     );
 };
 
