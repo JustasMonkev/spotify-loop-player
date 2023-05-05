@@ -60,6 +60,8 @@ const App = () => {
         <Router>
             <SpotifyAuth client_id={client_id} redirect_uri={redirect_uri} scopes={scopes}/>
             <Routes>
+                <Route path="/"
+                       element={<SpotifyAuth client_id={client_id} redirect_uri={redirect_uri} scopes={scopes}/>}/>
                 <Route path="/" element={<Redirect/>}/>
                 <Route path="/spotify/player"
                        element={
