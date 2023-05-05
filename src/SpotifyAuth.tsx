@@ -1,6 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
-import SpotifyApp from "./SpotifyApp.tsx";
 import "./assets/styles.css";
 
 interface SpotifyAuthProps {
@@ -61,15 +60,16 @@ const SpotifyAuth: React.FC<SpotifyAuthProps> = ({client_id, redirect_uri, scope
             setToken(data.access_token);
 
             localStorage.setItem('access_token', data.access_token);
+            console.log(scopes)
 
         } catch (error) {
             console.error('Failed to fetch access token', error);
         }
     };
 
-    const initiateAuthorization = async () => {
-        window.location.href = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=${scopes.join('%20')}&show_dialog=true`;
-    };
+    // const initiateAuthorization = async () => {
+    //     window.location.href = `https://accounts.spotify.com/authorize?client_id=${client_id}&response_type=code&redirect_uri=${redirect_uri}&scope=${scopes.join('%20')}&show_dialog=true`;
+    // };
 
     return (
         <div className="authButtonContainer">
