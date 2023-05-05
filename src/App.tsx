@@ -48,7 +48,7 @@ const SpotifyPlayerGuard = ({children}: { children: ReactNode }) => {
     const accessToken: string | null = localStorage.getItem('access_token');
 
     if (accessToken === null) {
-        return <Navigate to={'/'}/>
+        return <Navigate to={'/spotify'}/>
     }
 
     // Render the children when the token is present
@@ -59,7 +59,7 @@ const App = () => {
     return (
         <Router>
             <Routes>
-                <Route path="/"
+                <Route path="/spotify"
                        element={<SpotifyAuth client_id={client_id} redirect_uri={redirect_uri} scopes={scopes}/>}/>
                 <Route path="/" element={<Redirect/>}/>
                 <Route path="/spotify/player"
