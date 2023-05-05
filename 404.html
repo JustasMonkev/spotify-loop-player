@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <title>Redirecting...</title>
+    <script>
+        // The path segment of the URL where your app is deployed
+        const appPath = '/spotify-loop-player';
+
+        // Get the current URL's path and hash
+        const location = window.location.pathname + window.location.hash;
+
+        // Redirect to the index.html with the original path and hash
+        window.location.replace(`${appPath}/index.html${location}`);
+    </script>
+</head>
+<body>
+<h1>Redirecting...</h1>
+<p>If you are not redirected automatically, <a href="index.html">click here</a>.</p>
+</body>
+</html>

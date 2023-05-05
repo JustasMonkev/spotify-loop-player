@@ -1,4 +1,4 @@
-import {BrowserRouter as Router, Navigate, Route, Routes, useNavigate,} from 'react-router-dom';
+import {BrowserRouter as Router, Navigate, Route, Routes, useNavigate} from 'react-router-dom';
 import SpotifyAuth from "./SpotifyAuth.tsx";
 import React, {ReactNode} from "react";
 import SpotifyApp from "./SpotifyApp.tsx";
