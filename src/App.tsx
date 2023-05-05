@@ -58,8 +58,8 @@ const SpotifyPlayerGuard = ({children}: { children: ReactNode }) => {
 const App = () => {
     return (
         <Router>
+            <SpotifyAuth client_id={client_id} redirect_uri={redirect_uri} scopes={scopes}/>
             <Routes>
-                <SpotifyAuth client_id={client_id} redirect_uri={redirect_uri} scopes={scopes}/>
                 <Route path="/"
                        element={<SpotifyAuth client_id={client_id} redirect_uri={redirect_uri} scopes={scopes}/>}/>
                 <Route path="/" element={<Redirect/>}/>
