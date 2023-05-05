@@ -2,6 +2,7 @@ import {BrowserRouter as Router, Navigate, Route, Routes, useNavigate,} from 're
 import SpotifyAuth from "./SpotifyAuth.tsx";
 import React, {ReactNode} from "react";
 import SpotifyApp from "./SpotifyApp.tsx";
+import HelloWorld from "./test.tsx";
 
 const redirect_uri = import.meta.env.VITE_REDIRECT_URI;
 const client_id = import.meta.env.VITE_CLIENT_ID;
@@ -59,6 +60,7 @@ const App = () => {
     return (
         <Router>
             <Routes>
+                <HelloWorld/>
                 <Route path="/spotify"
                        element={<SpotifyAuth client_id={client_id} redirect_uri={redirect_uri} scopes={scopes}/>}/>
                 <Route path="/" element={<Redirect/>}/>
