@@ -2,7 +2,6 @@ import {BrowserRouter as Router, Navigate, Route, Routes, useNavigate,} from 're
 import SpotifyAuth from "./SpotifyAuth.tsx";
 import React, {ReactNode} from "react";
 import SpotifyApp from "./SpotifyApp.tsx";
-import HelloWorld from "./test.tsx";
 
 const redirect_uri = import.meta.env.VITE_REDIRECT_URI;
 const client_id = import.meta.env.VITE_CLIENT_ID;
@@ -39,7 +38,7 @@ const scopes: string[] = [
 const Redirect = () => {
     const navigate = useNavigate();
     React.useEffect(() => {
-        navigate('/spotify');
+        navigate('/');
     }, [navigate]);
 
     return null;
@@ -49,7 +48,7 @@ const SpotifyPlayerGuard = ({children}: { children: ReactNode }) => {
     const accessToken: string | null = localStorage.getItem('access_token');
 
     if (accessToken === null) {
-        return <Navigate to={'/spotify'}/>
+        return <Navigate to={'/'}/>
     }
 
     // Render the children when the token is present
@@ -60,8 +59,7 @@ const App = () => {
     return (
         <Router>
             <Routes>
-                <HelloWorld/>
-                <Route path="/spotify"
+                <Route path="/"
                        element={<SpotifyAuth client_id={client_id} redirect_uri={redirect_uri} scopes={scopes}/>}/>
                 <Route path="/" element={<Redirect/>}/>
                 <Route path="/spotify/player"
