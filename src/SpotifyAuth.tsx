@@ -58,8 +58,6 @@ const SpotifyAuth: React.FC<SpotifyAuthProps> = ({client_id, redirect_uri, scope
 
             const data = await response.json();
 
-            console.log(data)
-
             setToken(data.access_token);
 
             localStorage.setItem('access_token', data.access_token);
