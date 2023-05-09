@@ -1,4 +1,4 @@
-import {ChangeEvent, MouseEvent, useEffect, useRef, useState} from "react";
+import React, {ChangeEvent, MouseEvent, useEffect, useRef, useState} from "react";
 import {searchForSong} from "./services/spotifyService.ts";
 import {Song} from "./types/song";
 import "./assets/SearchComponent.css";
@@ -25,7 +25,7 @@ const SearchComponent = () => {
         setIsUlOpen(false);
     };
 
-    const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>, uri: string, name: string) => {
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, uri: string, name: string) => {
         if (event.key === 'Enter') {
             handleClick(uri, name);
         }
@@ -38,8 +38,12 @@ const SearchComponent = () => {
             }
         };
 
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-ignore
         document.addEventListener("mousedown", handleClickOutside);
         return () => {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
             document.removeEventListener("mousedown", handleClickOutside);
         };
     }, [searchRef]);
