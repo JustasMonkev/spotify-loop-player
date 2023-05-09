@@ -1,6 +1,6 @@
 import {Song} from "../types/song";
 import {
-    getSpotifyAnalysisApi,
+    getSpotifyAnalysisApi, getSpotifySearchApi,
     getSpotifyTrackApi,
     SPOTIFY_PAUSE_API,
     SPOTIFY_PLAY_API,
@@ -108,4 +108,44 @@ export const getSongBarsTime = async (id: string): Promise<Bars[]> => {
     });
 
     return bars;
+}
+
+export const searchForSong = async (query: string): Promise<Song[]> => {
+    if (!query.trim()) {
+        return [];
+    }
+
+    const response = await fetch(getSpotifySearchApi(encodeURIComponent(query)), {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+        }
+    })
+
+    if (response.status !== 200) {
+        throw new Error('Invalid response from server when searching for song');
+    }
+
+    const data = await response.json();
+
+    if (!data) {
+        throw new Error('Invalid response from server when searching for song');
+    }
+
+    const songs: Song[] = [];
+
+    data.tracks.items.forEach((item: any) => {
+        if (songs.find(song => song.name === item.name)) {
+            return;
+        }
+        songs.push({
+            name: item.name,
+            image: item.album.images[1].url,
+            artist: item.artists[0].name,
+            uri: item.uri.replace('spotify:track:', ''),
+        })
+    })
+
+    return songs;
 }

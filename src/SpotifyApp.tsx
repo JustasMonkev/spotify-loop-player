@@ -7,6 +7,7 @@ import {ChangeEvent, FormEvent, useEffect, useState} from "react";
 import {CurrentSongDisplay} from "./CurrentSongDisplay.tsx";
 import {Song} from "./types/song";
 import {findClosest} from "./utils.ts";
+import SearchComponent from "./SearchBar.tsx";
 
 function SpotifyApp() {
     const startTime = 6000; // 2 minutes
@@ -17,10 +18,15 @@ function SpotifyApp() {
     const [isPlaying, setIsPlayingButton] = useState(false);
     const [currentSong, setCurrentSong] = useState<Song | null>(null);
     const accessToken: string = localStorage.getItem('access_token')!;
-
+    setToken(accessToken);
 
     useEffect(() => {
         if (isPlaying) {
+
+            const uriFromLocalStorage = localStorage.getItem('selectedUri');
+            if (uriFromLocalStorage) {
+                setSongUri(uriFromLocalStorage);
+            }
             const fetchData = async () => {
                 const newCurrentSong = await getCurrentSong(songUri);
                 setCurrentSong(newCurrentSong);
@@ -78,13 +84,8 @@ function SpotifyApp() {
         event.preventDefault(); // Prevents the default form submission event
     }
 
-    const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setSongUri(event.target.value);
-    }
-
     const handlePlayClick = () => {
         setIsPlayingButton(true);
-        setToken(accessToken);
     };
 
     const handlePauseClick = async () => {
@@ -100,7 +101,7 @@ function SpotifyApp() {
                 <input type="text" placeholder="start song time"
                        onChange={handleStartTimeChange}/>
                 <input type="text" placeholder="end song time" onChange={handleEndTimeChange}/>
-                <input type="text" placeholder="Song URI" onChange={handleChange}/>
+                <SearchComponent/>
                 <div className="player-controls">
                     <button onClick={handlePlayClick} disabled={isPlaying} type="submit">Play Song</button>
                     <button onClick={handlePauseClick}>Pause Track</button>
