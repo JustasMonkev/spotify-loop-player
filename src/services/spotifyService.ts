@@ -16,7 +16,7 @@ export const setToken = (newToken: string) => {
     accessToken = newToken;
 }
 
-export const playSpotifyTrack = async (songUri: string, startTime: number) => {
+export const playSpotifyTrack = async (songUri: string | undefined, startTime: number) => {
     return fetch(SPOTIFY_PLAY_API, {
         method: 'PUT',
         body: JSON.stringify({
@@ -43,7 +43,7 @@ export const pauseSpotifyTrack = (accessToken: string) => {
     })
 }
 
-export const playSpotifyTrackOnRepeat = async (songUri: string, startTime: number, endTime: number) => {
+export const playSpotifyTrackOnRepeat = async (songUri: string | undefined, startTime: number, endTime: number) => {
     isPlaying = true;
     while (isPlaying) {
         await playSpotifyTrack(songUri, startTime).then(
@@ -52,7 +52,8 @@ export const playSpotifyTrackOnRepeat = async (songUri: string, startTime: numbe
     }
 }
 
-export const getCurrentSong = async (id: string): Promise<Song> => {
+export const getCurrentSong = async (id: string | undefined): Promise<Song> => {
+    console.log('id', id)
     const response = await fetch(getSpotifyTrackApi(id), {
         method: 'GET',
         headers: {
@@ -76,6 +77,7 @@ export const getCurrentSong = async (id: string): Promise<Song> => {
         image: data.album.images[1].url,
         artist: data.artists[0].name,
         uri: data.uri.replace('spotify:track:', ''),
+        duration: data.duration_ms,
     };
 }
 
@@ -144,6 +146,7 @@ export const searchForSong = async (query: string): Promise<Song[]> => {
             image: item.album.images[1].url,
             artist: item.artists[0].name,
             uri: item.uri.replace('spotify:track:', ''),
+            duration: item.duration_ms,
         })
     })
 

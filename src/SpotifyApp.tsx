@@ -1,5 +1,6 @@
 import {
-    getCurrentSong, getSongBarsTime,
+    getCurrentSong,
+    getSongBarsTime,
     pauseSpotifyTrack,
     playSpotifyTrackOnRepeat, searchForSong, setToken
 } from './services/spotifyService';
@@ -12,7 +13,6 @@ import SearchComponent from "./SearchBar.tsx";
 function SpotifyApp() {
     const startTime = 6000; // 2 minutes
     const endTime = 10000; // 3 minutes
-    const [songUri, setSongUri] = useState('');
     const [startTimeInput, setStartTimeInput] = useState(startTime);
     const [endTimeInput, setEndTimeInput] = useState(endTime);
     const [isPlaying, setIsPlayingButton] = useState(false);
@@ -22,65 +22,89 @@ function SpotifyApp() {
     const [searchResults, setSearchResults] = useState<Song[] | []>([]);
     const [isSearchBarEnabled, setIsSearchBarEnabled] = useState(true);
     const accessToken: string = localStorage.getItem('access_token')!;
+    const storedSongJsonString = localStorage.getItem("selectedUri");
+
     setToken(accessToken);
 
     useEffect(() => {
-        if (isPlaying) {
+        if (storedSongJsonString) {
+            const storedSong = JSON.parse(storedSongJsonString) as Song;
+            setCurrentSong(storedSong);
+        }
+    }, [storedSongJsonString]);
 
-            const songIDFromLocalStorage = localStorage.getItem('selectedUri');
-            if (songIDFromLocalStorage) {
-                setSongUri(songIDFromLocalStorage);
-            }
+
+    useEffect(() => {
+        if (isPlaying) {
             const fetchData = async () => {
-                const newCurrentSong = await getCurrentSong(songUri);
+                const newCurrentSong = await getCurrentSong(currentSong?.uri);
                 setCurrentSong(newCurrentSong);
 
-                if (currentSong?.uri !== songUri) {
-                    const bars = await getSongBarsTime(songUri);
+                if (currentSong) {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    const bars = await getSongBarsTime(currentSong.uri!);
                     const newStartTime = findClosest(startTimeInput, bars);
                     const newEndTime = findClosest(endTimeInput, bars);
                     setStartTimeInput(newStartTime);
                     setEndTimeInput(newEndTime);
                 }
 
-                await playSpotifyTrackOnRepeat(songUri, startTimeInput, endTimeInput);
+                await playSpotifyTrackOnRepeat(currentSong?.uri, startTimeInput, endTimeInput);
             };
 
             fetchData();
         }
-    }, [isPlaying, songUri, startTimeInput, endTimeInput, currentSong?.uri]);
+    }, [isPlaying, startTimeInput, endTimeInput, currentSong?.uri]);
 
-    const handleStartTimeChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const inputValue = Number(event.target.value);
+    const handleTimeInputChange = (
+        event: ChangeEvent<HTMLInputElement>,
+        isStartTime: boolean,
+    ) => {
+        const inputValue = Number(event.target.value)
+        const maxValue = getCurrentSongDuration()
 
-        if (inputValue <= 0 || event.target.value === "") {
-            setStartTimeInput(startTime);
-            return;
+        // Handle the case when the input value is empty or less than or equal to 0
+        if (inputValue <= 0 || event.target.value === '') {
+            if (isStartTime) {
+                setStartTimeInput(startTime)
+            } else {
+                setEndTimeInput(endTime)
+            }
+            return
         }
 
-        if (inputValue >= endTimeInput) {
-            setStartTimeInput(endTimeInput);
-            setEndTimeInput(inputValue);
-            return;
-        }
-        setStartTimeInput(inputValue);
-    }
-
-    const handleEndTimeChange = (event: ChangeEvent<HTMLInputElement>) => {
-        const inputValue = Number(event.target.value);
-
-        if (inputValue <= 0 || event.target.value === "") {
-            setEndTimeInput(endTime);
-            return;
+        // Handle the case when the input value is greater than the song's duration
+        if (inputValue > maxValue) {
+            if (isStartTime) {
+                setStartTimeInput(0)
+            } else {
+                setEndTimeInput(maxValue)
+            }
+            return
         }
 
-        if (inputValue <= startTimeInput) {
-            setEndTimeInput(startTimeInput);
-            setStartTimeInput(inputValue);
-            return;
+        // Handle the case when updating start time input
+        if (isStartTime) {
+            // If the input value is greater than or equal to the end time input, adjust both start and end times
+            if (inputValue >= endTimeInput) {
+                setStartTimeInput(endTimeInput)
+                setEndTimeInput(inputValue)
+            } else {
+                // Otherwise, just update the start time input
+                setStartTimeInput(inputValue)
+            }
         }
-
-        setEndTimeInput(inputValue);
+        // Handle the case when updating end time input
+        else {
+            // If the input value is less than or equal to the start time input, adjust both start and end times
+            if (inputValue <= startTimeInput) {
+                setEndTimeInput(startTimeInput)
+                setStartTimeInput(inputValue)
+            } else {
+                // Otherwise, just update the end time input
+                setEndTimeInput(inputValue)
+            }
+        }
     }
 
 
@@ -107,7 +131,6 @@ function SpotifyApp() {
     };
 
     const handleSongSelected = (song: Song) => {
-        setSongUri(song.uri);
         setSearchTerm(song.name);
     };
 
@@ -121,13 +144,17 @@ function SpotifyApp() {
         }
     };
 
+    const getCurrentSongDuration = () => {
+        if (currentSong) {
+            return currentSong.duration
+        }
+        return 0;
+    }
+
     return (
         <div className="player-container">
             <CurrentSongDisplay song={currentSong} isSpinning={isPlaying}/>
             <form className="input-form" onSubmit={handleSubmit}>
-                <input type="text" placeholder="start song time"
-                       onChange={handleStartTimeChange}/>
-                <input type="text" placeholder="end song time" onChange={handleEndTimeChange}/>
                 {isSearchBarEnabled && <input
                     type="text"
                     placeholder="Search for a song"
@@ -140,15 +167,22 @@ function SpotifyApp() {
                     <div className="clear-input-button" onClick={() => clearInputClick()} tabIndex={0}
                          onKeyDown={handleKeyDown} aria-label="clear search button"/>
                 )}
-                {isSearchBarEnabled && (
+                {isSearchBarEnabled && searchTerm && (
                     <SearchComponent searchResults={searchResults} isUlOpen={isUlOpen} setIsUlOpen={setIsUlOpen}
                                      onSongSelected={handleSongSelected}/>
                 )}
-
-                <div className="player-controls">
-                    <button onClick={handlePlayClick} disabled={isPlaying} type="submit">Play Song</button>
-                    <button onClick={handlePauseClick}>Pause Track</button>
-                </div>
+                {currentSong && (
+                    <div className="input-form">
+                        <input type="number" placeholder="start song time"
+                               onChange={(e => handleTimeInputChange(e, true))}/>
+                        <input type="number" placeholder="end song time"
+                               onChange={(e => handleTimeInputChange(e, false))}/>
+                        <div className="player-controls">
+                            <button onClick={handlePlayClick} disabled={isPlaying}>Play Song</button>
+                            <button onClick={handlePauseClick}>Pause Track</button>
+                        </div>
+                    </div>
+                )}
             </form>
         </div>
     );

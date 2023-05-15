@@ -3,4 +3,5 @@ export type Song = {
     image: string
     artist: string
     uri: string
+    duration: number
 }

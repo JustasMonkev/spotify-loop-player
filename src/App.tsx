@@ -48,6 +48,7 @@ const SpotifyPlayerGuard = ({children}: { children: ReactNode }) => {
     const accessToken: string | null = localStorage.getItem('access_token');
 
     if (accessToken === null) {
+        localStorage.clear();
         return <Navigate to={'/'}/>
     }
 
