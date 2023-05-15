@@ -1,33 +1,27 @@
-import React, {ChangeEvent, MouseEvent, useEffect, useRef, useState} from "react";
-import {searchForSong} from "./services/spotifyService.ts";
+import React, {MouseEvent, useEffect, useRef} from "react";
 import {Song} from "./types/song";
 import "./assets/SearchComponent.css";
 
-const SearchComponent = () => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [searchResults, setSearchResults] = useState<Song[] | []>([]);
-    const [isUlOpen, setIsUlOpen] = useState(false);
+// Add the onSongSelected prop to the SearchComponent
+const SearchComponent = ({searchResults, isUlOpen, setIsUlOpen, onSongSelected}: {
+    searchResults: Song[],
+    isUlOpen: boolean,
+    setIsUlOpen: (open: boolean) => void,
+    onSongSelected: (song: Song) => void
+}) => {
+
     const searchRef = useRef<HTMLDivElement>(null);
 
-    const handleUlOpen = () => {
-        setIsUlOpen(true);
-    };
-
-    const setSearchInput = async (event: ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(event.target.value);
-        const results: Song[] = await searchForSong(searchTerm);
-        setSearchResults(results);
-    };
-
-    const handleClick = (uri: string, name: string) => {
-        localStorage.setItem("selectedUri", uri);
-        setSearchTerm(name)
+    const handleClick = (song: Song) => {
+        localStorage.setItem("selectedUri", song.uri);
         setIsUlOpen(false);
+        onSongSelected(song);
     };
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, uri: string, name: string) => {
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>, song: Song) => {
         if (event.key === 'Enter') {
-            handleClick(uri, name);
+            handleClick(song);
         }
     };
 
@@ -46,31 +40,23 @@ const SearchComponent = () => {
             // @ts-ignore
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [searchRef]);
+    }, [searchRef, setIsUlOpen]);
 
     return (
-        <div ref={searchRef} className='search-container'>
-            <input
-                type="text"
-                placeholder="Search for a song"
-                onFocus={handleUlOpen}
-                onChange={(e) => setSearchInput(e)}
-                value={searchTerm}
-                className="search-input"
-            />
-            <ul className="search-input">
-                {searchResults.map((result) => (
+        <div ref={searchRef}>
+            <ul>
+                {searchResults.map((song) => (
                     <li
-                        key={result.uri}
-                        onClick={() => handleClick(result.uri, result.name)}
+                        key={song.uri}
+                        onClick={() => handleClick(song)}
                         className={`search-result ${isUlOpen ? "open" : ""}`}
                     >
                         <div tabIndex={0} className="search-result-content"
-                             onKeyDown={(e) => handleKeyDown(e, result.uri, result.name)}>
-                            <img src={result.image} alt="" className="song-image"/>
+                             onKeyDown={(e) => handleKeyDown(e, song)}>
+                            <img src={song.image} alt="" className="song-image"/>
                             <div>
-                                <div>{result.name}</div>
-                                <div className="artist">{result.artist}</div>
+                                <div>{song.name}</div>
+                                <div className="artist">{song.artist}</div>
                             </div>
                         </div>
                     </li>

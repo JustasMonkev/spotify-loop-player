@@ -1,9 +1,9 @@
 import {
     getCurrentSong, getSongBarsTime,
     pauseSpotifyTrack,
-    playSpotifyTrackOnRepeat, setToken
+    playSpotifyTrackOnRepeat, searchForSong, setToken
 } from './services/spotifyService';
-import {ChangeEvent, FormEvent, useEffect, useState} from "react";
+import React, {ChangeEvent, FormEvent, useEffect, useState} from "react";
 import {CurrentSongDisplay} from "./CurrentSongDisplay.tsx";
 import {Song} from "./types/song";
 import {findClosest} from "./utils.ts";
@@ -17,6 +17,10 @@ function SpotifyApp() {
     const [endTimeInput, setEndTimeInput] = useState(endTime);
     const [isPlaying, setIsPlayingButton] = useState(false);
     const [currentSong, setCurrentSong] = useState<Song | null>(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [isUlOpen, setIsUlOpen] = useState(false);
+    const [searchResults, setSearchResults] = useState<Song[] | []>([]);
+    const [isSearchBarEnabled, setIsSearchBarEnabled] = useState(true);
     const accessToken: string = localStorage.getItem('access_token')!;
     setToken(accessToken);
 
@@ -86,13 +90,36 @@ function SpotifyApp() {
 
     const handlePlayClick = () => {
         setIsPlayingButton(true);
+        setIsSearchBarEnabled(false)
     };
 
     const handlePauseClick = async () => {
         await pauseSpotifyTrack(accessToken);
         setIsPlayingButton(false);
+        setIsSearchBarEnabled(true)
+        setSearchTerm("");
     };
 
+    const setSearchInput = async (event: ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(event.target.value);
+        const results: Song[] = await searchForSong(searchTerm);
+        setSearchResults(results);
+    };
+
+    const handleSongSelected = (song: Song) => {
+        setSongUri(song.uri);
+        setSearchTerm(song.name);
+    };
+
+    const clearInputClick = () => {
+        setSearchTerm("");
+    };
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+        if (event.key === 'Enter') {
+            setSearchTerm("");
+        }
+    };
 
     return (
         <div className="player-container">
@@ -101,7 +128,23 @@ function SpotifyApp() {
                 <input type="text" placeholder="start song time"
                        onChange={handleStartTimeChange}/>
                 <input type="text" placeholder="end song time" onChange={handleEndTimeChange}/>
-                <SearchComponent/>
+                {isSearchBarEnabled && <input
+                    type="text"
+                    placeholder="Search for a song"
+                    onFocus={() => setIsUlOpen(true)}
+                    onChange={(e) => setSearchInput(e)}
+                    value={searchTerm}
+                />
+                }
+                {searchTerm && isSearchBarEnabled && (
+                    <div className="clear-input-button" onClick={() => clearInputClick()} tabIndex={0}
+                         onKeyDown={handleKeyDown} aria-label="clear search button"/>
+                )}
+                {isSearchBarEnabled && (
+                    <SearchComponent searchResults={searchResults} isUlOpen={isUlOpen} setIsUlOpen={setIsUlOpen}
+                                     onSongSelected={handleSongSelected}/>
+                )}
+
                 <div className="player-controls">
                     <button onClick={handlePlayClick} disabled={isPlaying} type="submit">Play Song</button>
                     <button onClick={handlePauseClick}>Pause Track</button>

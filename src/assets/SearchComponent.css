@@ -1,6 +1,9 @@
 .search-input {
-    padding: 0;
-    margin: 0;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  border: none;
 }
 
 .search-result {
@@ -10,10 +13,12 @@
     box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     padding: 13px 2px;
     cursor: pointer;
+    width: 125%;
 }
 
 .search-result.open {
     display: block;
+    width: 125%;
 }
 
 .search-result-content {
@@ -36,9 +41,51 @@
     display: inline-block;
     position: relative;
     width: 300px;
-}
+    z-index: 1;
+  }
 
 .search-input {
     width: 100%;
     box-sizing: border-box;
 }
+
+.clear-input-button {
+    position: relative;
+    transform: translateY(-80%);
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    padding: 0;
+    top: 50%;
+    cursor: pointer;
+    color: #b3b3b3;
+    margin-top: -45px;
+    left: 45%;
+  }
+
+  .clear-input-button:hover {
+    color: #fff;
+  }
+
+  .clear-input-button::before,
+  .clear-input-button::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 2px;
+    background-color: #b3b3b3;
+    transform: translate(-50%, -50%) rotate(45deg);
+    margin-top: 18px;
+  }
+
+  .clear-input-button::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
+
+  ul {
+      right: 19%;
+      margin-top: 37px;
+      position: relative;
+  }
