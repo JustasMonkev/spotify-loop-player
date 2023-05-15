@@ -27,9 +27,9 @@ function SpotifyApp() {
     useEffect(() => {
         if (isPlaying) {
 
-            const uriFromLocalStorage = localStorage.getItem('selectedUri');
-            if (uriFromLocalStorage) {
-                setSongUri(uriFromLocalStorage);
+            const songIDFromLocalStorage = localStorage.getItem('selectedUri');
+            if (songIDFromLocalStorage) {
+                setSongUri(songIDFromLocalStorage);
             }
             const fetchData = async () => {
                 const newCurrentSong = await getCurrentSong(songUri);
