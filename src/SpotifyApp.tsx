@@ -4,7 +4,7 @@ import {
     pauseSpotifyTrack,
     playSpotifyTrackOnRepeat, searchForSong, setToken
 } from './services/spotifyService';
-import React, {ChangeEvent, FormEvent, useEffect, useState} from "react";
+import React, {ChangeEvent, FormEvent, useEffect, useState, KeyboardEvent} from "react";
 import {CurrentSongDisplay} from "./CurrentSongDisplay.tsx";
 import {Song} from "./types/song";
 import {findClosest} from "./utils.ts";
@@ -56,11 +56,19 @@ function SpotifyApp() {
         }
     }, [isPlaying, startTimeInput, endTimeInput, currentSong?.uri]);
 
+
+    function numberOnly(event: KeyboardEvent) {
+        if (event.key.match(/[^0-9]/) && event.key !== 'Backspace'
+            && event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' ) {
+            event.preventDefault();
+        }
+    }
+
     const handleTimeInputChange = (
         event: ChangeEvent<HTMLInputElement>,
         isStartTime: boolean,
     ) => {
-        const inputValue = Number(event.target.value)
+        const inputValue = Number(event.target.value.replace(/\D/g, ''));
         const maxValue = getCurrentSongDuration()
 
         // Handle the case when the input value is empty or less than or equal to 0
@@ -173,9 +181,13 @@ function SpotifyApp() {
                 )}
                 {currentSong && (
                     <div className="input-form">
-                        <input type="number" placeholder="start song time"
+                        <input type="text" placeholder="start song time"
+                               pattern="[0-9]*"
+                               onKeyDown={numberOnly}
                                onChange={(e => handleTimeInputChange(e, true))}/>
-                        <input type="number" placeholder="end song time"
+                        <input type="text" placeholder="end song time"
+                               pattern="[0-9]*"
+                               onKeyDown={numberOnly}
                                onChange={(e => handleTimeInputChange(e, false))}/>
                         <div className="player-controls">
                             <button onClick={handlePlayClick} disabled={isPlaying}>Play Song</button>
