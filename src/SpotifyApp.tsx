@@ -59,7 +59,8 @@ function SpotifyApp() {
 
     function numberOnly(event: KeyboardEvent) {
         if (event.key.match(/[^0-9]/) && event.key !== 'Backspace'
-            && event.key !== 'ArrowLeft' && event.key !== 'ArrowRight' ) {
+            && event.key !== 'ArrowLeft' && event.key !== 'ArrowRight'
+            && event.key !== 'Tab') {
             event.preventDefault();
         }
     }
