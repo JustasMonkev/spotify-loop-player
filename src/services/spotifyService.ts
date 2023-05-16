@@ -53,7 +53,6 @@ export const playSpotifyTrackOnRepeat = async (songUri: string | undefined, star
 }
 
 export const getCurrentSong = async (id: string | undefined): Promise<Song> => {
-    console.log('id', id)
     const response = await fetch(getSpotifyTrackApi(id), {
         method: 'GET',
         headers: {
