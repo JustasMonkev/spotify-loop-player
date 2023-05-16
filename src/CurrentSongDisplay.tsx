@@ -1,9 +1,13 @@
 import {Song} from "./types/song";
 
-export const CurrentSongDisplay = ({song, isSpinning}: { song: Song | null, isSpinning: boolean }) => {
+export const CurrentSongDisplay = ({song, isSpinning, isPlaying}: {
+    song: Song | null,
+    isSpinning: boolean,
+    isPlaying: boolean
+}) => {
     return (
         <div className="song-display">
-            {song ? (
+            {isPlaying && song ? (
                 <div>
                     <h1> Now playing: {song.name}</h1>
                     <h2> By: {song.artist}</h2>
