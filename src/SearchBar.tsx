@@ -27,7 +27,9 @@ const SearchComponent = ({searchResults, isUlOpen, setIsUlOpen, onSongSelected}:
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent<Element, globalThis.MouseEvent>) => {
-            if (searchRef.current && !searchRef.current.contains(event.target as Node)) {
+            const element = document.getElementById('player');
+
+            if (element && !element.contains(event.target as Node)) {
                 setIsUlOpen(false);
             }
         };
@@ -40,11 +42,11 @@ const SearchComponent = ({searchResults, isUlOpen, setIsUlOpen, onSongSelected}:
             // @ts-ignore
             document.removeEventListener("mousedown", handleClickOutside);
         };
-    }, [searchRef, setIsUlOpen]);
+    }, [setIsUlOpen]);
 
     return (
         <div ref={searchRef}>
-            <ul data-testid ="search-results" aria-label="search-results">
+            <ul data-testid="search-results" aria-label="search-results">
                 {searchResults.map((song) => (
                     <li
                         key={song.uri}
@@ -56,7 +58,7 @@ const SearchComponent = ({searchResults, isUlOpen, setIsUlOpen, onSongSelected}:
                              onKeyDown={(e) => handleKeyDown(e, song)}>
                             <img src={song.image} alt="" className="song-image"/>
                             <div>
-                                <div data-testid ="search-result">{song.name}</div>
+                                <div data-testid="search-result">{song.name}</div>
                                 <div className="artist">{song.artist}</div>
                             </div>
                         </div>

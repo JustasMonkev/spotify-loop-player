@@ -161,7 +161,7 @@ function SpotifyApp() {
     }
 
     return (
-        <div className="player-container">
+        <div className="player-container" id="player">
             <CurrentSongDisplay song={currentSong} isSpinning={isPlaying}/>
             <form className="input-form" onSubmit={handleSubmit}>
                 {isSearchBarEnabled && <input
@@ -170,6 +170,7 @@ function SpotifyApp() {
                     onFocus={() => setIsUlOpen(true)}
                     onChange={(e) => setSearchInput(e)}
                     data-testid="search-input"
+                    value={searchTerm}
                 />
                 }
                 {searchTerm && isSearchBarEnabled && (
