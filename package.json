@@ -12,11 +12,14 @@
     "copy-404": "cp 404.html dist/404.html"
   },
   "dependencies": {
+    "dotenv": "^16.0.3",
+    "playwright": "^1.33.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.11.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.33.0",
     "@types/react": "^18.0.28",
     "@types/react-dom": "^18.0.11",
     "@typescript-eslint/eslint-plugin": "^5.57.1",
