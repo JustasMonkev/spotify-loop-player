@@ -46,9 +46,13 @@ test.describe('Spotify search', () => {
             )
         expect(searchResults.length).toBeGreaterThan(0)
 
-        await page.locator(selectors.clearSearchButton).click()
+        const clearSearchInput = await page.$(selectors.clearSearchButton);
+
+        await clearSearchInput.click();
 
         await expect(await page.locator(selectors.searchResults)).toBeHidden()
+
+        await expect(await page.locator(selectors.songSearchInput)).toBeEmpty();
     })
 })
 
