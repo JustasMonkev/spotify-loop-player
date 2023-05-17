@@ -44,18 +44,19 @@ const SearchComponent = ({searchResults, isUlOpen, setIsUlOpen, onSongSelected}:
 
     return (
         <div ref={searchRef}>
-            <ul>
+            <ul data-testid ="search-results" aria-label="search-results">
                 {searchResults.map((song) => (
                     <li
                         key={song.uri}
                         onClick={() => handleClick(song)}
                         className={`search-result ${isUlOpen ? "open" : ""}`}
+                        aria-label="search-result"
                     >
                         <div tabIndex={0} className="search-result-content"
                              onKeyDown={(e) => handleKeyDown(e, song)}>
                             <img src={song.image} alt="" className="song-image"/>
                             <div>
-                                <div>{song.name}</div>
+                                <div data-testid ="search-result">{song.name}</div>
                                 <div className="artist">{song.artist}</div>
                             </div>
                         </div>

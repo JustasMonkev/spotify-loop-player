@@ -72,9 +72,11 @@ const SpotifyAuth: React.FC<SpotifyAuthProps> = ({client_id, redirect_uri, scope
     };
 
     return (
-        <div className="authButtonContainer">
+        <div className="authButtonContainer" tabIndex={0}>
             {token ? <SpotifyApp/> :
-                <button onClick={initiateAuthorization} className="authButton"></button>}
+                <button onClick={initiateAuthorization} className="authButton"
+                        data-testid="authorization-button"
+                        aria-label="authorization-button"></button>}
         </div>
     );
 };

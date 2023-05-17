@@ -169,12 +169,15 @@ function SpotifyApp() {
                     placeholder="Search for a song"
                     onFocus={() => setIsUlOpen(true)}
                     onChange={(e) => setSearchInput(e)}
-                    value={searchTerm}
+                    data-testid="search-input"
                 />
                 }
                 {searchTerm && isSearchBarEnabled && (
                     <div className="clear-input-button" onClick={() => clearInputClick()} tabIndex={0}
-                         onKeyDown={handleKeyDown} aria-label="clear search button"/>
+                         onKeyDown={handleKeyDown} aria-label="clear search button"
+                         data-testid="clear-input-button"
+                         role="button"
+                    />
                 )}
                 {isSearchBarEnabled && searchTerm && (
                     <SearchComponent searchResults={searchResults} isUlOpen={isUlOpen} setIsUlOpen={setIsUlOpen}
@@ -185,14 +188,18 @@ function SpotifyApp() {
                         <input type="text" placeholder="start song time"
                                pattern="[0-9]*"
                                onKeyDown={numberOnly}
+                               data-testid="start-time-input"
                                onChange={(e => handleTimeInputChange(e, true))}/>
                         <input type="text" placeholder="end song time"
                                pattern="[0-9]*"
+                               data-testid="end-time-input"
                                onKeyDown={numberOnly}
                                onChange={(e => handleTimeInputChange(e, false))}/>
                         <div className="player-controls">
-                            <button onClick={handlePlayClick} disabled={isPlaying}>Play Song</button>
-                            <button onClick={handlePauseClick}>Pause Track</button>
+                            <button onClick={handlePlayClick} disabled={isPlaying}
+                                    data-testid={isPlaying ? "play-button-disabled" : "play-button-enabled"}>Play Song
+                            </button>
+                            <button onClick={handlePauseClick} data-testid="pause-button">Pause Track</button>
                         </div>
                     </div>
                 )}
