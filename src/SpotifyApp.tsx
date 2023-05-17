@@ -162,7 +162,7 @@ function SpotifyApp() {
 
     return (
         <div className="player-container">
-            <CurrentSongDisplay song={currentSong} isSpinning={isPlaying} isPlaying={isPlaying}/>
+            <CurrentSongDisplay song={currentSong} isSpinning={isPlaying}/>
             <form className="input-form" onSubmit={handleSubmit}>
                 {isSearchBarEnabled && <input
                     type="text"
