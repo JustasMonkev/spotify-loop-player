@@ -32,4 +32,8 @@ export default defineConfig({
             use: {...devices['Desktop Chrome'], headless: true, viewport: {width: 1920, height: 1080}},
         }
     ],
+    webServer: {
+        command: 'npm run dev',
+        url: 'http://localhost:5173/'
+    },
 });
