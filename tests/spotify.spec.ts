@@ -5,6 +5,7 @@ import selectors from '../test-utils/locators.ts'
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import {authenticateSpotify} from '../test-utils/spotify-test-auth.ts'
+import {Song} from "../src/types/song";
 
 
 test.beforeEach(async ({page}) => {
@@ -73,7 +74,7 @@ test.describe('Spotify play and pause controls', () => {
         await expect(await page.locator(selectors.playSongButton)).toBeVisible()
         await expect(await page.locator(selectors.pauseSongButton)).toBeVisible()
 
-        const selectedUri = await page.evaluate(() => localStorage.getItem('selectedUri'))
+        const selectedUri = await page.evaluate(() => localStorage.getItem('song'))
         expect(selectedUri).not.toBeNull()
 
         await expect(await page.locator(selectors.songName).getAttribute('class')).toBeNull()
@@ -162,5 +163,44 @@ test.describe('Spotify play and pause controls', () => {
         await page.reload()
 
         await expect(await page.locator(selectors.authorizationButton)).toBeVisible()
+    })
+
+    test('check if local storage is updated when selecting a new song', async ({page}) => {
+        await page.locator(selectors.songSearchInput).type('Eminem')
+        await page.waitForSelector(selectors.searchResults)
+
+        let searchResults = await page
+            .locator(selectors.searchResults)
+            .all()
+
+        await searchResults[0].click()
+
+        await expect(await page.locator(selectors.songName)).toBeVisible()
+
+        const firstSong = JSON.parse(await page.evaluate(() => localStorage.getItem('song'))) as Song
+
+        expect(firstSong).not.toBeNull()
+
+        await page.locator(selectors.songSearchInput).clear()
+
+        await page.locator(selectors.songSearchInput).type('Skepta')
+        await page.waitForSelector(selectors.searchResults)
+
+        searchResults = await page
+            .locator(selectors.searchResults)
+            .all()
+
+
+        await searchResults[0].click()
+
+        await expect(await page.locator(selectors.songName)).toBeVisible()
+
+        await expect(await page.locator(selectors.songName)).not.toEqual(firstSong.name)
+
+        const secondSong = JSON.parse(await page.evaluate(() => localStorage.getItem('song'))) as Song
+
+        expect(secondSong).not.toBeNull()
+
+        expect(firstSong).not.toEqual(secondSong)
     })
 })

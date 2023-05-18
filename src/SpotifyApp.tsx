@@ -22,7 +22,7 @@ function SpotifyApp() {
     const [searchResults, setSearchResults] = useState<Song[] | []>([]);
     const [isSearchBarEnabled, setIsSearchBarEnabled] = useState(true);
     const accessToken: string = localStorage.getItem('access_token')!;
-    const storedSongJsonString = localStorage.getItem("selectedUri");
+    const storedSongJsonString = localStorage.getItem("song");
 
     setToken(accessToken);
 

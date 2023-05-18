@@ -2,6 +2,7 @@ import {defineConfig, devices} from '@playwright/test';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import dotenv from 'dotenv';
+
 dotenv.config();
 
 
@@ -26,6 +27,7 @@ export default defineConfig({
     /* Configure projects for major browsers */
     projects: [
         {
+            retries: 1,
             name: 'chromium',
             use: {...devices['Desktop Chrome'], headless: true, viewport: {width: 1920, height: 1080}},
         }

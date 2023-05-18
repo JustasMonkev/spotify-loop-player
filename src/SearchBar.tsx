@@ -13,7 +13,7 @@ const SearchComponent = ({searchResults, isUlOpen, setIsUlOpen, onSongSelected}:
     const searchRef = useRef<HTMLDivElement>(null);
 
     const handleClick = (song: Song) => {
-        localStorage.setItem("selectedUri", JSON.stringify(song));
+        localStorage.setItem("song", JSON.stringify(song));
         setIsUlOpen(false);
         onSongSelected(song);
     };
