@@ -9,7 +9,13 @@
     "build": "tsc && vite build",
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite",
-    "copy-404": "cp 404.html dist/404.html"
+    "copy-404": "cp 404.html dist/404.html",
+    "prepare": "husky install"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npx playwright test"
+    }
   },
   "dependencies": {
     "dotenv": "^16.0.3",
@@ -28,6 +34,7 @@
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
+    "husky": "^8.0.3",
     "typescript": "^5.0.2",
     "vite": "^4.3.2",
     "vite-plugin-gh-pages": "^0.4.1"
