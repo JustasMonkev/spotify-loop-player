@@ -9,6 +9,8 @@ import {CurrentSongDisplay} from "./CurrentSongDisplay.tsx";
 import {Song} from "./types/song";
 import {findClosest} from "./utils.ts";
 import SearchComponent from "./SearchBar.tsx";
+import {SongHistory} from "./types/songHistory";
+import ParentComponent from "./ParentComponent.tsx";
 
 function SpotifyApp() {
     const startTime = 6000; // 2 minutes
@@ -23,6 +25,7 @@ function SpotifyApp() {
     const [isSearchBarEnabled, setIsSearchBarEnabled] = useState(true);
     const accessToken: string = localStorage.getItem('access_token')!;
     const storedSongJsonString = localStorage.getItem("song");
+    const [songHistory, setSongHistory] = useState<SongHistory[]>([]);
 
     setToken(accessToken);
 
@@ -122,6 +125,14 @@ function SpotifyApp() {
     const handlePlayClick = () => {
         setIsPlayingButton(true);
         setIsSearchBarEnabled(false)
+        const songArray: SongHistory[] = [];
+        songArray.push(
+            {
+                song: currentSong, songEndTime: startTimeInput, songStartTime: endTimeInput
+            } as SongHistory
+        )
+        setSongHistory((songHistory) => [...songHistory, ...songArray]);
+        localStorage.setItem("song-history", JSON.stringify(songHistory))
     };
 
     const handlePauseClick = async () => {
@@ -203,6 +214,7 @@ function SpotifyApp() {
                     </div>
                 )}
             </form>
+            <ParentComponent/>
         </div>
     );
 }
