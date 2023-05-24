@@ -40,14 +40,12 @@ function SpotifyApp() {
                 const newCurrentSong = await getCurrentSong(currentSong?.uri);
                 setCurrentSong(newCurrentSong);
 
-                if (currentSong) {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    const bars = await getSongBarsTime(currentSong.uri!);
-                    const newStartTime = findClosest(startTimeInput, bars);
-                    const newEndTime = findClosest(endTimeInput, bars);
-                    setStartTimeInput(newStartTime);
-                    setEndTimeInput(newEndTime);
-                }
+                if(!currentSong) return;
+
+                const bars = await getSongBarsTime(currentSong.uri!);
+
+                setStartTimeInput(findClosest(startTimeInput, bars))
+                setEndTimeInput(findClosest(endTimeInput, bars))
 
                 await playSpotifyTrackOnRepeat(currentSong?.uri, startTimeInput, endTimeInput);
             };
