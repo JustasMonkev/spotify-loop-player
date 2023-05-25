@@ -34,6 +34,7 @@ function SpotifyApp() {
             const storedSong = JSON.parse(storedSongJsonString) as Song;
             setCurrentSong(storedSong);
         }
+        setSongHistory(localStorage.getItem("song-history") ? JSON.parse(localStorage.getItem("song-history")!) : [])
     }, [storedSongJsonString]);
 
 
@@ -43,7 +44,7 @@ function SpotifyApp() {
                 const newCurrentSong = await getCurrentSong(currentSong?.uri);
                 setCurrentSong(newCurrentSong);
 
-                if(!currentSong) return;
+                if (!currentSong) return;
 
                 const bars = await getSongBarsTime(currentSong.uri!);
 
@@ -128,12 +129,28 @@ function SpotifyApp() {
         const songArray: SongHistory[] = [];
         songArray.push(
             {
-                song: currentSong, songEndTime: startTimeInput, songStartTime: endTimeInput
+                song: currentSong, songStartTime: startTimeInput, songEndTime: endTimeInput
             } as SongHistory
         )
-        setSongHistory((songHistory) => [...songHistory, ...songArray]);
-        localStorage.setItem("song-history", JSON.stringify(songHistory))
+        setSongHistory((prevSongHistory) => {
+            const newSong = songArray[0];
+            const oldSongIndex = prevSongHistory.findIndex(song => song.song.name === newSong.song.name);
+
+            let newSongHistory;
+            if (oldSongIndex !== -1) {
+                // Replace old song with new song
+                newSongHistory = [...prevSongHistory];
+                newSongHistory[oldSongIndex] = newSong;
+            } else {
+                // Add new song to history
+                newSongHistory = [...prevSongHistory, newSong];
+            }
+
+            localStorage.setItem("song-history", JSON.stringify(newSongHistory));
+            return newSongHistory;
+        });
     };
+
 
     const handlePauseClick = async () => {
         await pauseSpotifyTrack(accessToken);
@@ -214,7 +231,9 @@ function SpotifyApp() {
                     </div>
                 )}
             </form>
-            <ParentComponent/>
+            {!isPlaying && (
+                <ParentComponent songs={songHistory}/>
+            )}
         </div>
     );
 }

@@ -89,3 +89,8 @@
       margin-top: 37px;
       position: relative;
   }
+.modal-content {
+    max-height: 400px; /* or any height that suits your needs */
+    overflow-y: auto;
+}
+
