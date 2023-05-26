@@ -44,8 +44,6 @@ jobs:
         run: npm install
       - name: Build
         run: npm run build
-      - name: Copy 404.html to dist folder
-        run: npm run copy-404
       - name: Setup Pages
         uses: actions/configure-pages@v3
       - name: Upload artifact
