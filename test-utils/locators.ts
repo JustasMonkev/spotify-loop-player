@@ -17,6 +17,15 @@ const selectors = {
         passwordInput: "#login-password",
         loginButton: "#login-button",
         allowButton: `[data-testid="auth-accept"]`,
+    },
+    spotifyHistorySelectors: {
+        historyButton: "[data-testid = 'open-spotify-history']",
+        historyModal: "[data-testid = 'spotify-history-modal']",
+        historyModalCloseButton: "[data-testid = 'close-spotify-history']",
+        historyModalSongArtist: "[data-testid = 'spotify-history-song-artist']",
+        historyStartSongTime: "[data-testid = 'song-start-time']",
+        historyEndSongTime: "[data-testid = 'song-end-time']",
+        historyNoResults: "[data-testid = 'spotify-history-no-results']",
     }
 }
 

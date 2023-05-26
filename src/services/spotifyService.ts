@@ -47,8 +47,11 @@ export const playSpotifyTrackOnRepeat = async (songUri: string | undefined, star
     isPlaying = true;
     while (isPlaying) {
         await playSpotifyTrack(songUri, startTime).then(
-            await new Promise(resolve => setTimeout(resolve, endTime - startTime))
-        );
+            await new Promise(resolve => setTimeout(resolve, endTime - startTime)).then(
+                await new Promise(resolve => setTimeout(resolve, 500)
+                )
+            )
+        )
     }
 }
 

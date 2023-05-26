@@ -10,7 +10,7 @@ import {Song} from "./types/song";
 import {findClosest} from "./utils.ts";
 import SearchComponent from "./SearchBar.tsx";
 import {SongHistory} from "./types/songHistory";
-import ParentComponent from "./ParentComponent.tsx";
+import SpotifyHistoryModal from "./SpotifyHistoryModal.tsx";
 
 function SpotifyApp() {
     const startTime = 6000; // 2 minutes
@@ -149,6 +149,9 @@ function SpotifyApp() {
             localStorage.setItem("song-history", JSON.stringify(newSongHistory));
             return newSongHistory;
         });
+
+        localStorage.removeItem("song");
+        localStorage.setItem("song", JSON.stringify(currentSong));
     };
 
 
@@ -231,8 +234,8 @@ function SpotifyApp() {
                     </div>
                 )}
             </form>
-            {!isPlaying && (
-                <ParentComponent songs={songHistory}/>
+            {currentSong && !isPlaying && (
+                <SpotifyHistoryModal songs={songHistory} onSongSelected={setCurrentSong}/>
             )}
         </div>
     );
