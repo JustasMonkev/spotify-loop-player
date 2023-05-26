@@ -6,6 +6,7 @@ import selectors from '../test-utils/locators.ts'
 // @ts-ignore
 import {authenticateSpotify} from '../test-utils/spotify-test-auth.ts'
 import {Song} from "../src/types/song";
+import {SongHistory} from "../src/types/songHistory";
 
 
 test.beforeEach(async ({page}) => {
@@ -202,5 +203,168 @@ test.describe('Spotify play and pause controls', () => {
         expect(secondSong).not.toBeNull()
 
         expect(firstSong).not.toEqual(secondSong)
+    })
+})
+
+test.describe('Spotify History', () => {
+    test('Check if the "No results" message is displayed in the history modal', async ({page}) => {
+        await page.locator(selectors.songSearchInput).type('Eminem')
+        await page.waitForSelector(selectors.searchResults)
+
+        const searchResults = await page
+            .locator(selectors.searchResults)
+            .all()
+
+        await searchResults[0].click()
+
+        await expect(await page.locator(selectors.songName)).toBeVisible()
+
+        await page.locator(selectors.spotifyHistorySelectors.historyButton).click()
+
+        await expect(await page.locator(selectors.spotifyHistorySelectors.historyNoResults)).toBeVisible()
+
+    })
+
+    test('check if spotify history array is updated when playing new song', async ({page}) => {
+        await page.locator(selectors.songSearchInput).type('Eminem')
+        await page.waitForSelector(selectors.searchResults)
+
+        const searchResults = await page
+            .locator(selectors.searchResults)
+            .all()
+
+        await searchResults[0].click()
+
+        await expect(await page.locator(selectors.songName)).toBeVisible()
+
+        const firstSong = JSON.parse(await page.evaluate(() => localStorage.getItem('song'))) as Song
+
+        expect(firstSong).not.toBeNull()
+
+        await page.locator(selectors.playSongButton).click()
+        await page.locator(selectors.pauseSongButton).click()
+
+        const songHistory = JSON.parse(await page.evaluate(() => localStorage.getItem('song-history'))) as SongHistory[]
+
+        expect(songHistory).not.toBeNull()
+
+        await page.locator(selectors.spotifyHistorySelectors.historyButton).click()
+
+        await expect(await page.locator(selectors.spotifyHistorySelectors.historyNoResults)).not.toBeVisible()
+
+        await expect(await page.locator(selectors.spotifyHistorySelectors.historyModal)).toBeVisible()
+
+        await expect(await page.locator(selectors.spotifyHistorySelectors.historyModalSongArtist)).toBeVisible()
+
+        await expect(await page.locator(selectors.spotifyHistorySelectors.historyStartSongTime)).toBeVisible()
+
+        await expect(await page.locator(selectors.spotifyHistorySelectors.historyEndSongTime)).toBeVisible()
+
+    })
+    test('check if spotify history array is not overriding old data when playing new songs', async ({page}) => {
+        await page.locator(selectors.songSearchInput).type('Eminem')
+        await page.waitForSelector(selectors.searchResults)
+
+        const searchResults = await page
+            .locator(selectors.searchResults)
+            .all()
+
+        await searchResults[0].click()
+
+        await expect(await page.locator(selectors.songName)).toBeVisible()
+
+        await page.locator(selectors.playSongButton).click()
+        await page.locator(selectors.pauseSongButton).click()
+
+        await page.locator(selectors.songSearchInput).type('Rammstein')
+        await page.waitForSelector(selectors.searchResults)
+
+        await searchResults[0].click()
+
+        await expect(await page.locator(selectors.songName)).toBeVisible()
+
+
+        await page.locator(selectors.playSongButton).click()
+        await page.locator(selectors.pauseSongButton).click()
+
+        const songHistory = JSON.parse(await page.evaluate(() => localStorage.getItem('song-history'))) as SongHistory[]
+
+        await expect(songHistory).not.toBeNull()
+
+        await expect(songHistory.length).toEqual(2)
+
+        await expect(songHistory[0].song.uri).not.toEqual(songHistory[1].song.uri)
+    })
+
+    test('check if user can play song from the song history', async ({page}) => {
+        await page.locator(selectors.songSearchInput).type('Eminem')
+        await page.waitForSelector(selectors.searchResults)
+
+        const searchResults = await page
+            .locator(selectors.searchResults)
+            .all()
+
+        await searchResults[0].click()
+
+        await expect(await page.locator(selectors.songName)).toBeVisible()
+
+        await page.locator(selectors.playSongButton).click()
+        await page.locator(selectors.pauseSongButton).click()
+
+        await page.locator(selectors.songSearchInput).type('Rammstein')
+        await page.waitForSelector(selectors.searchResults)
+
+        await searchResults[0].click()
+
+        await expect(await page.locator(selectors.songName)).toBeVisible()
+
+        await page.locator(selectors.playSongButton).click()
+        await page.locator(selectors.pauseSongButton).click()
+
+        const firstSong = JSON.parse(await page.evaluate(() => localStorage.getItem('song'))) as Song
+
+        await page.locator(selectors.spotifyHistorySelectors.historyButton).click()
+
+        await expect(await page.locator(selectors.spotifyHistorySelectors.historyNoResults)).not.toBeVisible()
+
+        await expect(await page.locator(selectors.spotifyHistorySelectors.historyModal)).toBeVisible()
+
+        const historySongs = await page.locator(selectors.spotifyHistorySelectors.historyModalSongArtist).all()
+
+        await expect(historySongs.length).toEqual(2)
+
+        await historySongs[0].click()
+
+        await page.locator(selectors.playSongButton).click()
+        await page.locator(selectors.pauseSongButton).click()
+
+        const secondSong = JSON.parse(await page.evaluate(() => localStorage.getItem('song'))) as Song
+
+        await expect(firstSong).not.toEqual(secondSong)
+    })
+
+    test('check if user can reset listening history', async ({page}) => {
+        await page.locator(selectors.songSearchInput).type('Eminem')
+        await page.waitForSelector(selectors.searchResults)
+
+        const searchResults = await page
+            .locator(selectors.searchResults)
+            .all()
+
+        await searchResults[0].click()
+
+        await expect(await page.locator(selectors.songName)).toBeVisible()
+
+        await page.locator(selectors.playSongButton).click()
+        await page.locator(selectors.pauseSongButton).click()
+
+        const songHistory = JSON.parse(await page.evaluate(() => localStorage.getItem('song-history'))) as SongHistory[]
+
+        await expect(songHistory).not.toBeNull()
+
+        await page.locator(selectors.spotifyHistorySelectors.clearHistoryButton).click()
+
+        await expect(await page.evaluate(() => localStorage.getItem('song-history'))).toBeNull()
+
     })
 })

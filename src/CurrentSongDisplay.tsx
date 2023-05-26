@@ -7,7 +7,7 @@ export const CurrentSongDisplay = ({song, isSpinning}: { song: Song | null, isSp
                 <div>
                     <h1 data-testid="song-name"> Now playing: {song.name}</h1>
                     <h2 data-testid="song-artist"> By: {song.artist}</h2>
-                    <img src={song.image} alt="song image cover" className={isSpinning ? "rotating" : ""}
+                    <img src={song.image} alt="song image cover" className={isSpinning ? "rotating" : "image-wrapper"}
                          data-testid="song-image"/>
                 </div>
             ) : (
