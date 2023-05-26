@@ -127,3 +127,22 @@ body {
     margin-left: 15px;
     margin-top: 15px;
 }
+
+.clear-history-button {
+    background-color: #1db954;
+    color: #191414;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+
+}
+
+.clear-history-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}

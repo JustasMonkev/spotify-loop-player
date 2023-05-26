@@ -9,7 +9,7 @@ import {CurrentSongDisplay} from "./CurrentSongDisplay.tsx";
 import {Song} from "./types/song";
 import {findClosest} from "./utils.ts";
 import SearchComponent from "./SearchBar.tsx";
-import {SongHistory} from "./types/songHistory";
+import {SongHistory} from "./types/songHistory"
 import SpotifyHistoryModal from "./SpotifyHistoryModal.tsx";
 
 function SpotifyApp() {
@@ -25,7 +25,7 @@ function SpotifyApp() {
     const [isSearchBarEnabled, setIsSearchBarEnabled] = useState(true);
     const accessToken: string = localStorage.getItem('access_token')!;
     const storedSongJsonString = localStorage.getItem("song");
-    const [songHistory, setSongHistory] = useState<SongHistory[]>([]);
+    const [songHistoryArray, setsongHistoryArray] = useState<SongHistory[]>([]);
 
     setToken(accessToken);
 
@@ -34,7 +34,7 @@ function SpotifyApp() {
             const storedSong = JSON.parse(storedSongJsonString) as Song;
             setCurrentSong(storedSong);
         }
-        setSongHistory(localStorage.getItem("song-history") ? JSON.parse(localStorage.getItem("song-history")!) : [])
+        setsongHistoryArray(localStorage.getItem("song-history") ? JSON.parse(localStorage.getItem("song-history")!) : [])
     }, [storedSongJsonString]);
 
 
@@ -132,22 +132,22 @@ function SpotifyApp() {
                 song: currentSong, songStartTime: startTimeInput, songEndTime: endTimeInput
             } as SongHistory
         )
-        setSongHistory((prevSongHistory) => {
+        setsongHistoryArray((prevsongHistoryArray) => {
             const newSong = songArray[0];
-            const oldSongIndex = prevSongHistory.findIndex(song => song.song.name === newSong.song.name);
+            const oldSongIndex = prevsongHistoryArray.findIndex(song => song.song.name === newSong.song.name);
 
-            let newSongHistory;
+            let newsongHistoryArray;
             if (oldSongIndex !== -1) {
                 // Replace old song with new song
-                newSongHistory = [...prevSongHistory];
-                newSongHistory[oldSongIndex] = newSong;
+                newsongHistoryArray = [...prevsongHistoryArray];
+                newsongHistoryArray[oldSongIndex] = newSong;
             } else {
                 // Add new song to history
-                newSongHistory = [...prevSongHistory, newSong];
+                newsongHistoryArray = [...prevsongHistoryArray, newSong];
             }
 
-            localStorage.setItem("song-history", JSON.stringify(newSongHistory));
-            return newSongHistory;
+            localStorage.setItem("song-history", JSON.stringify(newsongHistoryArray));
+            return newsongHistoryArray;
         });
 
         localStorage.removeItem("song");
@@ -189,8 +189,21 @@ function SpotifyApp() {
         return 0;
     }
 
+    function clearHistory() {
+        localStorage.removeItem("song-history");
+        setsongHistoryArray([]);
+    }
+
     return (
         <div className="player-container" id="player">
+            {songHistoryArray.length !== 0 && !isPlaying && (
+                <div className='clear-history-button-container'>
+                    <button className="clear-history-button"
+                            data-testid="clear-history-button"
+                            onClick={() => clearHistory()}>Clear Spotify History
+                    </button>
+                </div>
+            )}
             <CurrentSongDisplay song={currentSong} isSpinning={isPlaying}/>
             <form className="input-form" onSubmit={handleSubmit}>
                 {isSearchBarEnabled && <input
@@ -235,7 +248,7 @@ function SpotifyApp() {
                 )}
             </form>
             {currentSong && !isPlaying && (
-                <SpotifyHistoryModal songs={songHistory} onSongSelected={setCurrentSong}/>
+                <SpotifyHistoryModal songs={songHistoryArray} onSongSelected={setCurrentSong}/>
             )}
         </div>
     );

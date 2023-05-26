@@ -26,6 +26,7 @@ const selectors = {
         historyStartSongTime: "[data-testid = 'song-start-time']",
         historyEndSongTime: "[data-testid = 'song-end-time']",
         historyNoResults: "[data-testid = 'spotify-history-no-results']",
+        clearHistoryButton: "[data-testid = 'clear-history-button']",
     }
 }
 

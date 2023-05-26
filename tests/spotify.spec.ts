@@ -342,4 +342,29 @@ test.describe('Spotify History', () => {
 
         await expect(firstSong).not.toEqual(secondSong)
     })
+
+    test('check if user can reset listening history', async ({page}) => {
+        await page.locator(selectors.songSearchInput).type('Eminem')
+        await page.waitForSelector(selectors.searchResults)
+
+        const searchResults = await page
+            .locator(selectors.searchResults)
+            .all()
+
+        await searchResults[0].click()
+
+        await expect(await page.locator(selectors.songName)).toBeVisible()
+
+        await page.locator(selectors.playSongButton).click()
+        await page.locator(selectors.pauseSongButton).click()
+
+        const songHistory = JSON.parse(await page.evaluate(() => localStorage.getItem('song-history'))) as SongHistory[]
+
+        await expect(songHistory).not.toBeNull()
+
+        await page.locator(selectors.spotifyHistorySelectors.clearHistoryButton).click()
+
+        await expect(await page.evaluate(() => localStorage.getItem('song-history'))).toBeNull()
+
+    })
 })
