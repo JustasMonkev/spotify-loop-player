@@ -2,6 +2,7 @@ import React, {useEffect, useRef, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
 import "./assets/styles.css";
 import SpotifyApp from "./SpotifyApp.tsx";
+import Cookies from 'js-cookie';
 
 interface SpotifyAuthProps {
     client_id: string;
@@ -60,8 +61,7 @@ const SpotifyAuth: React.FC<SpotifyAuthProps> = ({client_id, redirect_uri, scope
 
             setToken(data.access_token);
 
-            localStorage.setItem('access_token', data.access_token);
-
+            Cookies.set('access_token', data.access_token, {expires: 1 / 24})
         } catch (error) {
             console.error('Failed to fetch access token', error);
         }

@@ -11,6 +11,7 @@ import {findClosest} from "./utils.ts";
 import SearchComponent from "./SearchBar.tsx";
 import {SongHistory} from "./types/songHistory"
 import SpotifyHistoryModal from "./SpotifyHistoryModal.tsx";
+import Cookies from 'js-cookie';
 
 function SpotifyApp() {
     const startTime = 6000; // 2 minutes
@@ -23,7 +24,7 @@ function SpotifyApp() {
     const [isUlOpen, setIsUlOpen] = useState(false);
     const [searchResults, setSearchResults] = useState<Song[] | []>([]);
     const [isSearchBarEnabled, setIsSearchBarEnabled] = useState(true);
-    const accessToken: string = localStorage.getItem('access_token')!;
+    const accessToken: string = Cookies.get('access_token')!;
     const storedSongJsonString = localStorage.getItem("song");
     const [songHistoryArray, setsongHistoryArray] = useState<SongHistory[]>([]);
 

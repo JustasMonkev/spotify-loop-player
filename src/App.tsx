@@ -2,6 +2,7 @@ import {BrowserRouter as Router, Navigate, Route, Routes, useNavigate} from 'rea
 import SpotifyAuth from "./SpotifyAuth.tsx";
 import React, {ReactNode} from "react";
 import SpotifyApp from "./SpotifyApp.tsx";
+import Cookies from 'js-cookie';
 
 const redirect_uri = import.meta.env.VITE_REDIRECT_URI;
 const client_id = import.meta.env.VITE_CLIENT_ID;
@@ -20,10 +21,6 @@ const scopes: string[] = [
     'user-modify-playback-state',
     'user-read-currently-playing',
     'app-remote-control',
-    'playlist-read-private',
-    'playlist-read-collaborative',
-    'playlist-modify-private',
-    'playlist-modify-public',
     'user-follow-modify',
     'user-follow-read',
     'user-read-playback-position',
@@ -45,9 +42,9 @@ const Redirect = () => {
 };
 
 const SpotifyPlayerGuard = ({children}: { children: ReactNode }) => {
-    const accessToken: string | null = localStorage.getItem('access_token');
+    const accessToken: string | undefined = Cookies.get('access_token');
 
-    if (accessToken === null) {
+    if (!accessToken) {
         localStorage.clear();
         return <Navigate to={'/'}/>
     }
