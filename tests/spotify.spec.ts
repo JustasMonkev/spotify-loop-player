@@ -155,11 +155,11 @@ test.describe('Spotify play and pause controls', () => {
         await expect(await page.locator(selectors.songImage)).toBeVisible()
     })
 
-    test('check if when removing the access_token from local storage it is redirected to the main page', async ({page}) => {
+    test('check if when removing the access_token from cookies it is redirected to the main page', async ({page}) => {
         await page.locator(selectors.songSearchInput).type('Eminem')
         await page.waitForSelector(selectors.searchResults)
 
-        await page.evaluate(() => localStorage.clear());
+        await page.context().clearCookies();
 
         await page.reload()
 
