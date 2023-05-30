@@ -3,7 +3,7 @@ import SpotifyApp from "../src/SpotifyApp";
 import {expect} from "@playwright/test";
 
 
-test.use({viewport: {width: 500, height: 500}});
+test.use({viewport: {width: 1920, height: 1080}});
 
 const cookies = [
     {
@@ -27,5 +27,7 @@ test('spotify song player', async ({mount, page}) => {
 
 
     const component = await mount(<SpotifyApp/>);
+    await expect(component).toHaveText('Now playing: Nike Air By: AnezziPlay SongPause TrackSong History');
+
     await expect(component).toHaveScreenshot();
 });
