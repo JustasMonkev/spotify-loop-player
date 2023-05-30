@@ -10,7 +10,7 @@
     "lint": "eslint src --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite",
     "prepare": "husky install",
-    "precommit": "git diff --quiet --cached --name-only | grep -q '^src/' && npx playwright test",
+    "precommit": "playwright test -c playwright-ct.config.ts && npx playwright test",
     "test-ct": "playwright test -c playwright-ct.config.ts"
   },
   "husky": {
@@ -38,6 +38,7 @@
     "@typescript-eslint/eslint-plugin": "^5.57.1",
     "@typescript-eslint/parser": "^5.57.1",
     "@vitejs/plugin-react": "^4.0.0",
+    "chokidar": "^3.5.3",
     "eslint": "^8.38.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.3.4",
