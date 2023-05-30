@@ -2,7 +2,6 @@ import React, {MouseEvent, useEffect, useRef} from "react";
 import {Song} from "./types/song";
 import "./assets/SearchComponent.css";
 
-// Add the onSongSelected prop to the SearchComponent
 const SearchComponent = ({searchResults, isUlOpen, setIsUlOpen, onSongSelected}: {
     searchResults: Song[],
     isUlOpen: boolean,

@@ -12,10 +12,12 @@ import SearchComponent from "./SearchBar.tsx";
 import {SongHistory} from "./types/songHistory"
 import SpotifyHistoryModal from "./SpotifyHistoryModal.tsx";
 import Cookies from 'js-cookie';
+import "./assets/SearchComponent.css";
+import "./assets/styles.css";
 
 function SpotifyApp() {
-    const startTime = 6000; // 2 minutes
-    const endTime = 10000; // 3 minutes
+    const startTime = 6000;
+    const endTime = 10000;
     const [startTimeInput, setStartTimeInput] = useState(startTime);
     const [endTimeInput, setEndTimeInput] = useState(endTime);
     const [isPlaying, setIsPlayingButton] = useState(false);
