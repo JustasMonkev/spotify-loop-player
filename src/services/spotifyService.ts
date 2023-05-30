@@ -6,6 +6,7 @@ import {
     SPOTIFY_PLAY_API,
 } from "../assets/constants.ts";
 import {Bars} from "../types/bars";
+import Cookies from "js-cookie";
 
 
 let isPlaying = false;
@@ -93,8 +94,9 @@ export const getSongBarsTime = async (id: string): Promise<Bars[]> => {
         }
     })
 
-    if (response.status !== 200) {
-        throw new Error('Invalid response from server when getting song bars');
+    if (response.status === 401) {
+        Cookies.remove('access_token');
+        window.location.reload();
     }
 
     const data = await response.json();
